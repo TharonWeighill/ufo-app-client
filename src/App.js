@@ -1,4 +1,5 @@
 import { Component } from "react";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 
 import './App.css';
 
@@ -20,16 +21,24 @@ class App extends Component {
       .catch((error) => console.error(error));
   };
   render() { // this second (but third to getDerivedStateFromProps, which we aren't using)
-    console.log(this.state);
     return (
-      <div>
-        {this.state.sightings.map((sighting) => {
-          return (
-            <div key={sighting.id}>
-              <p>{sighting.city}, {sighting.state}, {sighting.country}</p>
-            </div>
-          );
-        })}
+      <div className="map-container">
+      <MapContainer className="map" center={[0, -0]} zoom={3} scrollWheelZoom={false}>
+        <TileLayer
+          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        {this.state.sightings.map((sighting) => (
+          <Marker position={[sighting.latitude, sighting.longitude]} key={sighting.id}>
+            <Popup>
+              <h2>Information</h2>
+              <div>Location: {sighting.city}, {sighting.state} {sighting.country}</div>
+              <div>Shape: {sighting.shape}</div>
+              <a href="/">Read More</a>
+            </Popup>
+          </Marker>
+        ))}
+      </MapContainer>
       </div>
     );
   };
